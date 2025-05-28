@@ -6,18 +6,25 @@ import { schema } from '@/infra/db/schemas'
 import { uploadFileToStorage } from '@/infra/storage/upload-file-to-storage'
 import { type Either, makeRight } from '@/shared/either'
 import { stringify } from 'csv-stringify'
+import { ilike } from 'drizzle-orm'
 import { z } from 'zod'
 
 const exportLinksInputSchema = z.object({
   shortUrl: z.string().optional(),
 })
 
+type ExportUploadsInput = z.input<typeof exportLinksInputSchema>
+
 type ExportLinksOutput = {
   reportUrl: string
 }
 
-export async function exportLinks(): Promise<Either<never, ExportLinksOutput>> {
-  const { sql } = db
+export async function exportLinks(
+  input: ExportUploadsInput
+): Promise<Either<never, ExportLinksOutput>> {
+  const { shortUrl } = exportLinksInputSchema.parse(input)
+
+  const { sql, params } = db
     .select({
       id: schema.links.id,
       originalUrl: schema.links.originalUrl,
@@ -26,13 +33,10 @@ export async function exportLinks(): Promise<Either<never, ExportLinksOutput>> {
       createdAt: schema.links.createdAt,
     })
     .from(schema.links)
+    .where(shortUrl ? ilike(schema.links.shortUrl, `%${shortUrl}%`) : undefined)
     .toSQL()
 
-  const cursor = pg.unsafe(sql).cursor(50)
-
-  // for await (const rows of cursor) {
-  //   console.log(rows)
-  // }
+  const cursor = pg.unsafe(sql, params as string[]).cursor(50)
 
   const csv = stringify({
     delimiter: ',',
@@ -71,8 +75,6 @@ export async function exportLinks(): Promise<Either<never, ExportLinksOutput>> {
   })
 
   const [{ url }] = await Promise.all([uploadToStorage, convertToCsvPipeLine])
-
-  await convertToCsvPipeLine
 
   return makeRight({ reportUrl: url })
 }
