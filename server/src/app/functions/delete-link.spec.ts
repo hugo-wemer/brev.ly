@@ -15,6 +15,6 @@ describe('delete links', () => {
       shortUrl: `linkToBeDeleted-${shortUrlPattern}`,
     })
 
-    // expect(isRight(sut)).toBe(true)
+    expect(isRight(sut)).toBe(true)
   })
 })
