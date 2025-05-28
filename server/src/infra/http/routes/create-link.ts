@@ -10,8 +10,8 @@ export const createLinkRoute: FastifyPluginAsyncZod = async server => {
       schema: {
         summary: 'Create new link',
         body: z.object({
-          link: z.string().url(),
-          shortenLink: z.string().url(),
+          originalUrl: z.string().url(),
+          shortUrl: z.string(),
         }),
         response: {
           201: z.object({
@@ -28,7 +28,7 @@ export const createLinkRoute: FastifyPluginAsyncZod = async server => {
     async (request, reply) => {
       await db.insert(schema.links).values({
         originalUrl: 'http://teste.com',
-        shortUrl: 'http://teste-curto.com',
+        shortUrl: 'teste-curto',
       })
       return reply.status(201).send({ linkId: 'teste' })
     }
