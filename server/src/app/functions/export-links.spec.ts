@@ -49,11 +49,9 @@ describe('export links', () => {
       .split('\n')
       .map(row => row.split(','))
 
-    console.log(csvAsArray)
-
     expect(isRight(sut)).toBe(true)
     expect(unwrapEither(sut).reportUrl).toBe('http://example.com/file.csv')
-    console.log(csvAsArray)
+
     expect(csvAsArray).toEqual([
       ['ID', 'Original URL', 'Short URL', 'Access Count', 'Created at'],
       [
