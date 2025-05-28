@@ -41,9 +41,7 @@ export async function getLinks(
       })
       .from(schema.links)
       .where(
-        searchQuery
-          ? ilike(schema.links.shortUrl, `%${searchQuery}%`)
-          : undefined
+        searchQuery ? ilike(schema.links.shortUrl, `${searchQuery}`) : undefined
       )
       .orderBy(fields => {
         if (sortBy && sortDirection === 'asc') {

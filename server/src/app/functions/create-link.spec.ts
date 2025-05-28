@@ -9,7 +9,7 @@ import { DuplicatedShortUrl } from './errors/duplicated-short-url'
 import { InvalidShortUrlInput } from './errors/invalid-short-url-input'
 
 describe('create link', () => {
-  it('it should be able to create an new link', async () => {
+  it('should be able to create an new link', async () => {
     const id = randomUUID()
     const originalUrl = `http://${id}.com/integration`
 
@@ -26,7 +26,7 @@ describe('create link', () => {
     expect(result).toHaveLength(1)
   })
 
-  it('it should not be able to create a short url that already exists', async () => {
+  it('should not be able to create a short url that already exists', async () => {
     const id = randomUUID()
     const originalUrl = `http://${id}.com/integration`
 
@@ -43,7 +43,7 @@ describe('create link', () => {
     expect(unwrapEither(sut)).toBeInstanceOf(DuplicatedShortUrl)
   })
 
-  it('it should not be able to create an new link with a poorly short url format', async () => {
+  it('should not be able to create an new link with a poorly short url format', async () => {
     const id = randomUUID()
     const originalUrl = `http://${id}.com/integration`
 
