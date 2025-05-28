@@ -11,6 +11,7 @@ import {
 import { createLinkRoute } from './routes/create-link'
 import { transformSwaggerSchema } from './transform-swagger-schema'
 
+import { exportLinksRoute } from './routes/export-links'
 import { getLinksRoute } from './routes/get-links'
 
 const server = fastify()
@@ -47,6 +48,7 @@ server.register(fastifySwaggerUi, {
 
 server.register(createLinkRoute)
 server.register(getLinksRoute)
+server.register(exportLinksRoute)
 
 server.listen({ port: 3333, host: '0.0.0.0' }).then(() => {
   console.log('HTTP Server running!')

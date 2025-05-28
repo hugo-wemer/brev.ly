@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto'
+import { basename, extname } from 'node:path'
 import { Readable } from 'node:stream'
 import { env } from '@/env'
 import { Upload } from '@aws-sdk/lib-storage'
@@ -18,7 +19,15 @@ export async function uploadFileToStorage(input: UploadFileToStorageInput) {
   const { folder, fileName, contentType, contentStream } =
     uploadFileToStorageInputSchema.parse(input)
 
-  const uniqueFileName = `${folder}/${randomUUID()}-${fileName}`
+  const fileExtension = extname(fileName)
+  const fileNameWithoutExtension = basename(fileName)
+  const sanitizedFileName = fileNameWithoutExtension.replace(
+    /[^a-zA-Z0-9]/g,
+    ''
+  )
+  const sanitizedFileNameWithExtension = sanitizedFileName.concat(fileExtension)
+
+  const uniqueFileName = `${folder}/${randomUUID()}-${sanitizedFileNameWithExtension}`
 
   const upload = new Upload({
     client: r2,
