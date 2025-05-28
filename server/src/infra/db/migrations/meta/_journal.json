@@ -15,6 +15,13 @@
       "when": 1748394707434,
       "tag": "0001_demonic_morlun",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1748441633915,
+      "tag": "0002_ambiguous_nightshade",
+      "breakpoints": true
     }
   ]
 }

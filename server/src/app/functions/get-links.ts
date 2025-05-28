@@ -5,7 +5,7 @@ import { asc, count, desc, ilike } from 'drizzle-orm'
 import { z } from 'zod'
 
 const getLinksInputSchema = z.object({
-  searchQuery: z.string().optional(),
+  shortUrl: z.string().optional(),
   sortBy: z.enum(['createdAt']).optional(),
   sortDirection: z.enum(['asc', 'desc']).optional(),
   page: z.number().optional().default(1),
@@ -27,7 +27,7 @@ type GetLinksOutput = {
 export async function getLinks(
   input: GetLinksInput
 ): Promise<Either<never, GetLinksOutput>> {
-  const { searchQuery, sortBy, sortDirection, page, pageSize } =
+  const { shortUrl, sortBy, sortDirection, page, pageSize } =
     getLinksInputSchema.parse(input)
 
   const [links, [{ total }]] = await Promise.all([
@@ -40,9 +40,7 @@ export async function getLinks(
         createdAt: schema.links.createdAt,
       })
       .from(schema.links)
-      .where(
-        searchQuery ? ilike(schema.links.shortUrl, `${searchQuery}`) : undefined
-      )
+      .where(shortUrl ? ilike(schema.links.shortUrl, `${shortUrl}`) : undefined)
       .orderBy(fields => {
         if (sortBy && sortDirection === 'asc') {
           return asc(fields[sortBy])
@@ -59,9 +57,7 @@ export async function getLinks(
       .select({ total: count(schema.links.id) })
       .from(schema.links)
       .where(
-        searchQuery
-          ? ilike(schema.links.shortUrl, `%${searchQuery}%`)
-          : undefined
+        shortUrl ? ilike(schema.links.shortUrl, `${shortUrl}`) : undefined
       ),
   ])
 

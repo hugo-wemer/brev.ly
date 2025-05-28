@@ -28,7 +28,7 @@ describe('get links', () => {
     await makeLink({ shortUrl: `link4-${shortUrlPattern}` })
 
     const sut = await getLinks({
-      searchQuery: `link2-${shortUrlPattern}`,
+      shortUrl: `link2-${shortUrlPattern}`,
     })
 
     expect(isRight(sut)).toBe(true)
