@@ -1,3 +1,4 @@
+import { createLink } from '@/app/functions/create-link'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -26,9 +27,9 @@ export const createLinkRoute: FastifyPluginAsyncZod = async server => {
       },
     },
     async (request, reply) => {
-      await db.insert(schema.links).values({
-        originalUrl: 'http://teste.com',
-        shortUrl: 'teste-curto',
+      const response = await createLink({
+        originalUrl: request.body.originalUrl,
+        shortUrl: request.body.shortUrl,
       })
       return reply.status(201).send({ linkId: 'teste' })
     }
