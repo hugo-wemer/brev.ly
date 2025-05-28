@@ -1,6 +1,4 @@
 import { createLink } from '@/app/functions/create-link'
-import { db } from '@/infra/db'
-import { schema } from '@/infra/db/schemas'
 import { isRight, unwrapEither } from '@/shared/either'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -13,7 +11,13 @@ export const createLinkRoute: FastifyPluginAsyncZod = async server => {
         summary: 'Create new link',
         body: z.object({
           originalUrl: z.string().url(),
-          shortUrl: z.string(),
+          shortUrl: z
+            .string()
+            .min(1)
+            .regex(/^[A-Za-z0-9\-._~!$&'()*+,;=:@]+$/, {
+              message:
+                'shortUrl must contain only valid URL path characters (letters, numbers, and allowed symbols)',
+            }),
         }),
         response: {
           201: z.null().describe('Link created.'),
