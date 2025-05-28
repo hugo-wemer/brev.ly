@@ -1,6 +1,7 @@
 import { createLink } from '@/app/functions/create-link'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
+import { isRight, unwrapEither } from '@/shared/either'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
@@ -15,9 +16,7 @@ export const createLinkRoute: FastifyPluginAsyncZod = async server => {
           shortUrl: z.string(),
         }),
         response: {
-          201: z.object({
-            linkId: z.string(),
-          }),
+          201: z.null().describe('Link created.'),
           409: z
             .object({
               message: z.string(),
@@ -27,11 +26,22 @@ export const createLinkRoute: FastifyPluginAsyncZod = async server => {
       },
     },
     async (request, reply) => {
-      const response = await createLink({
+      const result = await createLink({
         originalUrl: request.body.originalUrl,
         shortUrl: request.body.shortUrl,
       })
-      return reply.status(201).send({ linkId: 'teste' })
+      if (isRight(result)) {
+        return reply.status(201).send()
+      }
+
+      const error = unwrapEither(result)
+
+      switch (error.constructor.name) {
+        case 'DuplicatedShortUrl':
+          return reply.status(409).send({ message: error.message })
+        default:
+          return reply.status(400).send({ message: 'Unexpected error.' })
+      }
     }
   )
 }
