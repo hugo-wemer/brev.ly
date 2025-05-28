@@ -1,10 +1,10 @@
-import { randomUUID } from 'node:crypto'
 import { integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { uuidv7 } from 'uuidv7'
 
 export const links = pgTable('links', {
   id: text('id')
     .primaryKey()
-    .$defaultFn(() => randomUUID()),
+    .$defaultFn(() => uuidv7()),
   originalUrl: text('original_url').notNull(),
   shortUrl: text('short_url').notNull(),
   accessCount: integer('access_count'),
