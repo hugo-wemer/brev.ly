@@ -3,6 +3,7 @@ import { schema } from '@/infra/db/schemas'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
 import { z } from 'zod'
 import { DuplicatedShortUrl } from './errors/duplicated-short-url'
+import { InvalidShortUrlInput } from './errors/invalid-short-url-input'
 
 const createLinkInputSchema = z.object({
   originalUrl: z.string().url(),
@@ -19,8 +20,16 @@ type CreateLinkInput = z.input<typeof createLinkInputSchema>
 
 export async function createLink(
   input: CreateLinkInput
-): Promise<Either<DuplicatedShortUrl, { linkId: string }>> {
-  const { originalUrl, shortUrl } = createLinkInputSchema.parse(input)
+): Promise<
+  Either<DuplicatedShortUrl | InvalidShortUrlInput, { linkId: string }>
+> {
+  const result = createLinkInputSchema.safeParse(input)
+
+  if (!result.success) {
+    return makeLeft(new InvalidShortUrlInput())
+  }
+
+  const { originalUrl, shortUrl } = result.data
 
   try {
     await db.insert(schema.links).values({
