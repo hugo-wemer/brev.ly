@@ -21,7 +21,7 @@ const incrementAccessCountInputSchema = z.object({
 type IncrementAccessCountInput = z.input<typeof incrementAccessCountInputSchema>
 
 type IncrementAccessCountOutput = {
-  updatedAccessCount?: number
+  updatedAccessCount: number
 }[]
 
 export async function incrementAccessCount(
