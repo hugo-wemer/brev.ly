@@ -1,18 +1,17 @@
-import { Copy } from '@phosphor-icons/react'
-import { Button } from './button'
-import { IconButton } from './icon-button'
+import { Button } from '@/components/button'
+import { IconButton } from '@/components/icon-button'
 import {
   InputContainer,
   InputField,
   InputPrefix,
   InputRoot,
   InputTitle,
-} from './input'
+} from '@/components/input'
 
 export function NewLinkForm() {
   return (
     <form className="bg-gray-100 w-[366px] md:w-[380px] rounded-lg p-6 md:p-8 flex flex-col gap-5">
-      <span className="font-bold text-lg">Novo link</span>
+      <h1 className="font-bold text-lg">Novo link</h1>
       <InputRoot>
         <InputTitle>Link Original</InputTitle>
         <InputContainer>
