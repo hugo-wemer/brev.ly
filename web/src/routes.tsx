@@ -9,7 +9,7 @@ export const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { path: '/', element: <Home /> },
-      { path: '/redirect', element: <Redirect /> },
+      { path: '/:shortUrl', element: <Redirect /> },
     ],
   },
 ])

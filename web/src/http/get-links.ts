@@ -11,7 +11,11 @@ export interface GetLinksResponse {
   total: number
 }
 
-export async function getLinks() {
-  const response = await api.get('/links')
+interface GetLinksRequestParams {
+  shortUrl?: string
+}
+
+export async function getLinks(params?: GetLinksRequestParams) {
+  const response = await api.get('/links', { params })
   return response
 }

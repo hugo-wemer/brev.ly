@@ -9,7 +9,7 @@ export function Home() {
       <div className="md:w-full mb-3 md:mb-8">
         <img src={Logo} alt="Brev.ly" className="w-24" />
       </div>
-      <div className="flex flex-col gap-3 md:flex-row">
+      <div className="flex flex-col gap-3 md:flex-row h-2/3">
         <NewLinkForm />
         <MyLinks />
       </div>
