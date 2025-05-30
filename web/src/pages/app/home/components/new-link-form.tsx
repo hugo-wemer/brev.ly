@@ -7,11 +7,12 @@ import {
   InputTitle,
 } from '@/components/input'
 import { env } from '@/env'
-import { postLink } from '@/http/post-link'
+import { type PostLinkRequest, postLink } from '@/http/post-link'
 import { queryClient } from '@/lib/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { WarningIcon } from '@phosphor-icons/react'
 import { useMutation } from '@tanstack/react-query'
+import type { AxiosError } from 'axios'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -43,11 +44,15 @@ const postLinkFormSchema = z.object({
     )
     .refine(val => !/\s/.test(val), {
       message: 'URL inválida.',
+    })
+    .refine(val => val !== '404', {
+      message: 'Essa é uma URL reservada. Por favor escolha outra.',
     }),
 })
 type PostLinkForm = z.infer<typeof postLinkFormSchema>
 
 export function NewLinkForm() {
+  // const [shortLinkAlreadyExists, setShortLinkAlreadyExists] = useState(false)
   const {
     register,
     handleSubmit,
@@ -56,7 +61,11 @@ export function NewLinkForm() {
     resolver: zodResolver(postLinkFormSchema),
   })
 
-  const { mutateAsync: createLink } = useMutation({
+  const { mutateAsync: createLink, error: postError } = useMutation<
+    void,
+    AxiosError,
+    PostLinkRequest
+  >({
     mutationFn: postLink,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['links'] })
@@ -88,7 +97,7 @@ export function NewLinkForm() {
           </div>
         )}
       </InputRoot>
-      <InputRoot error={!!errors.shortUrl}>
+      <InputRoot error={!!errors.shortUrl || postError?.status === 409}>
         <InputTitle>Link Encurtado</InputTitle>
         <InputContainer>
           <InputPrefix>{env.VITE_FRONTEND_URL}/</InputPrefix>
@@ -98,6 +107,12 @@ export function NewLinkForm() {
           <div className="flex items-center gap-2">
             <WarningIcon className="size-4 text-danger mb-1" />
             <span className="text-xs/4">{errors.shortUrl.message}</span>
+          </div>
+        )}
+        {postError?.status === 409 && (
+          <div className="flex items-center gap-2">
+            <WarningIcon className="size-4 text-danger mb-1" />
+            <span className="text-xs/4">Esse link encurtado já existe.</span>
           </div>
         )}
       </InputRoot>

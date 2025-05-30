@@ -1,4 +1,7 @@
+import { env } from '@/env'
 import { getLinks } from '@/http/get-links'
+import { incrementAccessCount } from '@/http/increment-access-count'
+import { queryClient } from '@/lib/react-query'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { RedirectCard } from './components/redirect-card'
@@ -9,10 +12,13 @@ export function Redirect() {
     async function fetchAndRedirect() {
       const { data } = await getLinks({ shortUrl })
       if (!data.total) {
-        return
+        window.location.href = `${env.VITE_FRONTEND_URL}/404`
+      }
+      if (shortUrl) {
+        await incrementAccessCount({ shortUrl })
+        queryClient.invalidateQueries({ queryKey: ['links'] })
       }
       window.location.href = data.links[0].originalUrl
-      // console.log(data.links)
     }
     //
     fetchAndRedirect()

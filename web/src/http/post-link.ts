@@ -7,5 +7,5 @@ export interface PostLinkRequest {
 
 export async function postLink({ originalUrl, shortUrl }: PostLinkRequest) {
   const response = await api.post('/link', { originalUrl, shortUrl })
-  return response
+  return response.data
 }
