@@ -32,7 +32,11 @@ server.setErrorHandler((error, request, reply) => {
   return reply.send(500).send({ message: 'Internal server error' })
 })
 
-server.register(fastifyCors, { origin: '*' })
+server.register(fastifyCors, {
+  origin: '*',
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
+  allowedHeaders: ['Content-Type'],
+})
 
 server.register(fastifyMultipart)
 server.register(fastifySwagger, {
