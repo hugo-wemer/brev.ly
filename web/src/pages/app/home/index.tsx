@@ -5,7 +5,7 @@ import Logo from '@/assets/Logo.svg'
 
 export function Home() {
   return (
-    <main className="md:h-dvh flex flex-col items-center justify-center mt-8 w-fit mx-auto">
+    <main className="md:h-dvh flex flex-col items-center justify-center mt-8 md:w-fit mx-auto w-screen">
       <div className="md:w-full mb-3 md:mb-8">
         <img src={Logo} alt="Brev.ly" className="w-24" />
       </div>

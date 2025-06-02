@@ -38,8 +38,8 @@ export function Link({ originalUrl, shortUrl, accessCount }: LinkProps) {
   }
 
   return (
-    <div className="flex items-center gap-4 justify-between py-3">
-      <div className="text-nowrap flex flex-col gap-1 truncate">
+    <div className="flex items-center justify-between gap-4  py-3">
+      <div className="text-nowrap flex flex-col gap-1 truncate max-w-[150px] md:max-w-[350px]">
         <a
           className="text-blue-base font-semibold text-sm/4.5 truncate"
           href={`${env.VITE_FRONTEND_URL}/${shortUrl}`}
